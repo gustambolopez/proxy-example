@@ -1,7 +1,8 @@
 importScripts('/uv/uv.bundle.js')
 importScripts('/uv/uv.config.js')
 importScripts('/uv/uv.sw.js')
-importScripts('/scram/scramjet.all.js');
+importScripts('/scramjet/scramjet.shared.js')
+importScripts('/scramjet/scramjet.worker.js')
 importScripts('/envade/en.config.js');
 importScripts('/envade/en.bundle.js');
 importScripts('/envade/en.worker.js');
@@ -9,7 +10,6 @@ importScripts('/envade/en.worker.js');
 
 const uv = new UVServiceWorker();
 const scramjet = new ScramjetServiceWorker();
-const { ScramjetServiceWorker } = $scramjetLoadWorker();
 const envade = new EnvadeServiceWorker(); 
 
 
