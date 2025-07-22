@@ -1,0 +1,145 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.leftnavbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 72px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  z-index: 100;
+  transition: width 0.2s ease;
+}
+
+.leftnavbar .navitem {
+  width: 52px;
+  height: 52px;
+  font-size: 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .leftnavbar {
+    flex-direction: row;
+    height: 64px;
+    width: 100%;
+    top: unset;
+    bottom: 0;
+    border-radius: 20px 20px 0 0;
+    padding: 0 8px;
+    gap: 0;
+    justify-content: center;
+  }
+
+  .leftnavbar .navitem {
+    width: 44px;
+    height: 44px;
+    font-size: 1.7rem;
+    margin: 0 6px;
+  }
+}
+
+.tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  margin-left: 80px;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  padding: 6px 14px;
+  gap: 8px;
+  font-size: 14px;
+  height: 32px;
+}
+
+.tab.active {
+}
+
+.tab .close {
+  font-size: 16px;
+  margin-left: 8px;
+  padding: 2px 5px;
+}
+
+.tab .close:hover {
+}
+
+.tab.add {
+  font-size: 20px;
+  padding: 0 5px;
+  min-width: 38px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, border 0.2s ease;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: 80px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  padding: 0 20px;
+  flex: 0 0 auto;
+}
+
+.search-bar-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-bar-btn i {
+  width: 22px;
+  height: 22px;
+}
+
+.search-bar-input-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  transition: all 0.2s;
+}
+
+.search-bar-input-container input[type="text"] {
+  flex: 1;
+  font-size: 16px;
+  padding: 0 12px;
+  height: 100%;
+  outline: none;
+}
+
+.search-bar-input-container:focus-within {
+}
+
+#proxyIframe {
+  flex-grow: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
