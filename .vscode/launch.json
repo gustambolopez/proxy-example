@@ -1,0 +1,14 @@
+{
+// 8080 the best port fr
+    "version": "1.0.0",
+    "configurations": [
+        
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "skibidi",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
+        }
+    ]
+}
