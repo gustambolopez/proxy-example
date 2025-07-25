@@ -2,11 +2,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   const proxsel = document.getElementById('proxysel'); 
 
-  let scr = 'skibidi.js';
+  let scr = 'skibidi.obamahavedih';
   const lastprox = localStorage.getItem('sproxy'); 
 
   if (lastprox === 'envade') {
-    scr = 's.js';
+    scr = 's.obamahavedih';
   }
 
 

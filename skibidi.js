@@ -1,5 +1,4 @@
-
- //       _ __       _ _ _   
+//       _ __       _ _ _   
 // ___/ |/ /_   __| (_) |__ 
 // / __| | '_ \ / _` | | '_ \ 
 // \__ \ | (_) | (_| | | | | |
@@ -105,6 +104,11 @@ document.addEventListener('DOMContentLoaded', async () => {
       case "envade":
         proxiedUrl = self.__envade$config?.codec
           ? self.__envade$config.prefix + self.__envade$config.codec.encode(url)
+          : url;
+        break;
+      case "eclipse":
+        proxiedUrl = self.__eclipse$config?.codec
+          ? self.__eclipse$config.prefix + self.__eclipse$config.codec.encode(url)
           : url;
         break;
       default:
