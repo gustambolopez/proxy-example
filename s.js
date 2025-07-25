@@ -69,10 +69,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     registerServiceWorker(selected);
   });
 
-  // yeebsweb the fucking goat 
+ // abcdefghijklmnopqrstuvwxyz
   const resolveURL = (inputVal) => {
     const trimmed = inputVal.trim();
-    const searchURL = "https://yeebsweb.com/search?q=%s";
+    const searchURL = "https://duckduckgo.com/?q=%s";
 
     try {
       return new URL(trimmed).toString();
