@@ -4,7 +4,6 @@
 // \__ \ | (_) | (_| | | | | |
 // |___/_|\___/ \__,_|_|_| |_|
 
-
 const scramjet = new ScramjetController({
   prefix: "/service/scramjet/",
   files: {
@@ -15,7 +14,6 @@ const scramjet = new ScramjetController({
     sync: "/scramjet/scramjet.sync.js"
   }
 });
-
 
 async function registerServiceWorker(proxyt) {
   if (!('serviceWorker' in navigator)) return;
@@ -35,15 +33,24 @@ async function registerServiceWorker(proxyt) {
   }
 }
 
+function getfav(url) {
+  try {
+    const domain = new URL(url).origin;
+    return `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(domain)}`;
+  } catch {
+    return `https://t0.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(url)}`;
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   const input = document.getElementById("input");
-  const iframe = document.getElementById("proxyIframe");
+  const iframecont = document.getElementById("iframeContainer");
   const proxysel = document.getElementById("proxysel");
-  const backBtn = document.getElementById("backBtn");
-  const forwardBtn = document.getElementById("forwardBtn");
-  const reloadBtn = document.getElementById("reloadBtn");
+  const tabsbar = document.getElementById("tabsBar");
 
-
+  const backbtn = document.getElementById("backBtn");
+  const forwardbtn = document.getElementById("forwardBtn");
+  const reloadbtn = document.getElementById("reloadBtn");
 
   // wisp and transport stuff 
   const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
@@ -68,10 +75,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     registerServiceWorker(selected);
   });
 
- // abcdefghijklmnopqrstuvwxyz
-  const resolveURL = (inputVal) => {
-    const trimmed = inputVal.trim();
-    const searchURL = "https://duckduckgo.com/?q=%s";
+  // abcdefghijklmnopqrstuvwxyz
+  const resolveurl = (inputval) => {
+    const trimmed = inputval.trim();
+    const searchurl = "https://search.brave.com/search?q=%s";
 
     try {
       return new URL(trimmed).toString();
@@ -82,74 +89,156 @@ document.addEventListener('DOMContentLoaded', async () => {
       } catch {}
     }
 
-    return searchURL.replace("%s", encodeURIComponent(trimmed));
+    return searchurl.replace("%s", encodeURIComponent(trimmed));
   };
 
-  const historyStack = [];
-  let currentIndex = -1;
-
-  function loadPage(url) {
-    let proxiedUrl;
+  function encodeurl(url) {
     const proxy = proxysel.value;
-  // envadeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
     switch (proxy) {
       case "uv":
-        proxiedUrl = __uv$config?.encodeUrl
-          ? __uv$config.prefix + __uv$config.encodeUrl(url)
-          : url;
-        break;
-      case "scramjet":
-        proxiedUrl = scramjet.encodeUrl?.(url) || url;
-        break;
+        return window.__uv$config?.prefix + window.__uv$config.encodeUrl(url);
       case "envade":
-        proxiedUrl = self.__envade$config?.codec
-          ? self.__envade$config.prefix + self.__envade$config.codec.encode(url)
-          : url;
-        break;
-      case "eclipse":
-        proxiedUrl = self.__eclipse$config?.codec
-          ? self.__eclipse$config.prefix + self.__eclipse$config.codec.encode(url)
-          : url;
-        break;
+        return window.__envade$config?.prefix + window.__envade$config.codec.encode(url);
+      case "scramjet":
+        return scramjet.encodeUrl?.(url) || url;
       default:
-        proxiedUrl = url;
+        return url;
     }
-
-    iframe.src = proxiedUrl;
-    input.value = url;
   }
 
-  function push(url) {
-    historyStack.splice(currentIndex + 1);
-    historyStack.push(url);
-    currentIndex++;
+  let tabs = [];
+  let activetab = null;
+  let tabid = 0;
+
+  function createtab(initurl = "https://search.brave.com/") {
+    const frame = document.createElement("iframe");
+    frame.style.width = "100%";
+    frame.style.height = "100%";
+    frame.style.border = "none";
+    frame.style.position = "absolute";
+    frame.style.top = 0;
+    frame.style.left = 0;
+    frame.style.display = "none";
+
+    iframecont.appendChild(frame);
+
+    const tab = {
+      id: tabid++,
+      frame,
+      url: initurl,
+      title: "new tab",
+      fav: getfav(initurl)
+    };
+
+    tabs.push(tab);
+    frame.src = encodeurl(initurl);
+
+    frame.addEventListener("load", () => {
+      try {
+        const ttl = frame.contentDocument?.title || new URL(initurl).hostname;
+        tab.title = ttl || "...";
+      } catch {
+        tab.title = new URL(initurl).hostname;
+      }
+      tab.fav = getfav(tab.url);
+      updatetabs();
+    });
+
+    switchtab(tab.id);
+    updatetabs();
   }
 
-  input.addEventListener("keydown", e => {
+  function switchtab(id) {
+    tabs.forEach(t => t.frame.style.display = "none");
+
+    const found = tabs.find(t => t.id === id);
+    if (!found) return;
+
+    activetab = id;
+    found.frame.style.display = "block";
+    input.value = found.url;
+    updatetabs();
+  }
+
+  function closetab(id) {
+    const i = tabs.findIndex(t => t.id === id);
+    if (i === -1) return;
+
+    const [tab] = tabs.splice(i, 1);
+    tab.frame.remove();
+
+    if (tabs.length === 0) {
+      createtab();
+    } else if (id === activetab) {
+      switchtab(tabs[Math.max(i - 1, 0)].id);
+    } else {
+      updatetabs();
+    }
+  }
+
+  function updatetabs() {
+    tabsbar.innerHTML = "";
+
+    tabs.forEach(tab => {
+      const el = document.createElement("div");
+      el.className = "tab" + (tab.id === activetab ? " active" : "");
+      el.onclick = () => switchtab(tab.id);
+
+      const icon = document.createElement("img");
+      icon.src = tab.fav;
+      icon.className = "tabicon";
+      icon.alt = "";
+      icon.onerror = () => icon.style.display = "none";
+
+      const ttl = document.createElement("span");
+      ttl.className = "tabttl";
+      ttl.textContent = tab.title;
+
+      const cls = document.createElement("span");
+      cls.className = "tabclose";
+      cls.textContent = "\u00d7";
+      cls.onclick = (e) => {
+        e.stopPropagation();
+        closetab(tab.id);
+      };
+
+      el.appendChild(icon);
+      el.appendChild(ttl);
+      el.appendChild(cls);
+      tabsbar.appendChild(el);
+    });
+
+    const add = document.createElement("div");
+    add.className = "tab add";
+    add.textContent = "+";
+    add.onclick = () => createtab();
+    tabsbar.appendChild(add);
+  }
+
+  input.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && input.value.trim()) {
-      const url = resolveURL(input.value);
-      push(url);
-      loadPage(url);
+      const url = resolveurl(input.value);
+      const tab = tabs.find(t => t.id === activetab);
+      if (!tab) return;
+      tab.url = url;
+      tab.frame.src = encodeurl(url);
     }
   });
 
-  backBtn.addEventListener("click", () => {
-    if (currentIndex > 0) {
-      currentIndex--;
-      loadPage(historyStack[currentIndex]);
-    }
+  reloadbtn.addEventListener("click", () => {
+    const tab = tabs.find(t => t.id === activetab);
+    if (tab) tab.frame.src = encodeurl(tab.url);
   });
 
-  forwardBtn.addEventListener("click", () => {
-    if (currentIndex < historyStack.length - 1) {
-      currentIndex++;
-      loadPage(historyStack[currentIndex]);
-    }
+  backbtn.addEventListener("click", () => {
+    const tab = tabs.find(t => t.id === activetab);
+    if (tab && tab.frame.contentWindow) tab.frame.contentWindow.history.back();
   });
 
-  reloadBtn.addEventListener("click", () => {
-    if (currentIndex >= 0) {
-      loadPage(historyStack[currentIndex]);
-    }
+  forwardbtn.addEventListener("click", () => {
+    const tab = tabs.find(t => t.id === activetab);
+    if (tab && tab.frame.contentWindow) tab.frame.contentWindow.history.forward();
   });
+
+  createtab();
 });
