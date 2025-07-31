@@ -1,12 +1,23 @@
 {
-// 8080 the best port fr
+    // 8080 the best port fr
     "version": "1.0.0",
     "configurations": [
         
         {
+            "type": "node",
+            "request": "launch",
+            "name": "index.js",
+            "program": "${workspaceFolder}/index.js",
+            "runtimeExecutable": "node",
+            "console": "integratedTerminal",
+            "env": {
+                "PORT": "8080"
+            }
+        },
+        {
             "type": "chrome",
             "request": "launch",
-            "name": "skibidi",
+            "name": "open",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}"
         }

@@ -11,7 +11,6 @@
   <script src="/envade/en.config.js"></script>
   <script src="/envade/en.bundle.js"></script>
   <script src="/scramjet/scramjet.controller.js"></script>
-
   <script src="/baremux/index.js"></script>
 </head>
 <body style="margin:0; padding:0; overflow:hidden;">
@@ -19,9 +18,9 @@
 
   <script>
     const getparam = (n) => new URLSearchParams(location.search).get(n);
-    const url = getparam('url');
-    const px = getparam('proxy') || localStorage.getItem('sproxy') || 'uv';
-    const iframe = document.getElementById('iframe');
+    const raw = getparam("url");
+    const px = getparam("proxy") || localStorage.getItem("sproxy") || "uv";
+    const iframe = document.getElementById("iframe");
 
     const scramjet = new ScramjetController({
       prefix: "/service/scramjet/",
@@ -33,49 +32,67 @@
         sync: "/scramjet/scramjet.sync.js"
       }
     });
+    // feat: added suport for / path urls and added localstorage baremux as fallback cuz baremux keep killing itself and it was pmo
+    // todo: ubg player (idfk how to say it gng)
 
     const load = async () => {
-      // wisp and transport stuff 
+      if (!raw) {
+        document.body.innerHTML = "<h2>null</h2>";
+        return;
+      }
+
+      const resolved = new URL(raw, location.origin).toString();
       const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
       const wisp = location.origin.includes("8080")
         ? `${location.protocol === "http:" ? "ws:" : "wss:"}//${location.host}/wisp/`
         : "wss://wisp.terbiumon.top/wisp/";
 
-      await connection.setTransport("/epoxy/index.mjs", [{ wisp }]);
+      try {
+        await connection.setTransport("/epoxy/index.mjs", [{ wisp }]);
+      } catch (err) {
+        console.warn("baremux loading failed");
+        const fallback = localStorage.getItem("baremux");
+        if (fallback) {
+          try {
+            await import(fallback);
+            console.log("localstorage baremux loaded");
+          } catch (e) {
+            console.error("localstorage baremux failed to load:", e);
+          }
+        }
+      }
 
       await scramjet.init();
 
-      let final = url;
+      let final = resolved;
 
       switch (px) {
         case "uv":
           if (window.__uv$config?.encodeUrl) {
-            final = window.__uv$config.prefix + window.__uv$config.encodeUrl(url);
+            final = window.__uv$config.prefix + window.__uv$config.encodeUrl(resolved);
           }
           break;
 
         case "envade":
           if (window.__envade$config?.codec) {
-            final = window.__envade$config.prefix + window.__envade$config.codec.encode(url);
+            final = window.__envade$config.prefix + window.__envade$config.codec.encode(resolved);
           }
           break;
 
         case "scramjet":
-          final = scramjet.encodeUrl?.(url) || url;
+          final = scramjet.encodeUrl?.(resolved) || resolved;
           break;
       }
 
       iframe.src = final;
     };
 
-    if (url) {
-      load().catch(err => {
-        console.error("embed failed", err);
-        document.body.innerHTML = "<h2>failed to load</h2>";
-      });
-    } else {
-      document.body.innerHTML = "<h2>null</h2>";
-    }
+    load().catch(err => {
+      console.error("embed failed", err);
+      document.body.innerHTML = "<h2>failed to load</h2>";
+    });
   </script>
 </body>
 </html>
+
+
