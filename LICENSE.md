@@ -12,6 +12,7 @@ Before using, modifying, or distributing this software, you must read and comply
 - GNU Affero General Public License version 3 (AGPLv3) (Section 4)
 
 License texts:
+
 - FAL License included below
 - AGPLv3 License: https://www.gnu.org/licenses/agpl-3.0.html
 
@@ -33,10 +34,12 @@ This Project uses a hybrid licensing model.
 - **AGPLv3 Components**: Third-party software licensed under AGPLv3, including but not limited to code from the following organizations and repositories:
 
   **Organizations:**
+
   - Mercury Workshop (https://github.com/MercuryWorkshop)
   - Titanium Network (https://github.com/titaniumnetwork-dev)
 
   **Repositories:**
+
   - Ultraviolet (UV) by Titanium Network – https://github.com/titaniumnetwork-dev/Ultraviolet
   - Scramjet by Mercury Workshop – https://github.com/MercuryWorkshop/scramjet
   - Wisp Protocol by Mercury Workshop – https://github.com/MercuryWorkshop/wisp-protocol
@@ -57,19 +60,23 @@ This list is not exhaustive. All other AGPLv3-licensed software from Mercury Wor
 Permission is hereby granted, free of charge, to any person obtaining a copy of the software and associated documentation files (the “Software”), to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to the following conditions:
 
 a) Attribution Requirement
+
 - Any distribution or public use of the Software, including modified or derivative works, must include clear and visible attribution to the original author (s16dih).
 - Attribution must be included in all public-facing instances (e.g., user interface, documentation, about pages) and in the source code (e.g., comments, headers).
 - A suitable attribution statement is:
-  *“Based on software originally created under the Free Attribution License by s16dih (2025).”*
+  _“Based on software originally created under the Free Attribution License by s16dih (2025).”_
 
 b) Modification Disclosure
+
 - Modifications must be clearly documented in source code or accompanying documentation to indicate what changes were made.
 
 c) Enforcement
+
 - Failure to provide the required attribution may result in enforcement actions, including but not limited to DMCA takedown requests or other legal remedies.
 - Parties distributing or using the Software without proper attribution assume full responsibility for any consequences.
 
 d) Warranty Disclaimer
+
 - THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.
 
 ---
